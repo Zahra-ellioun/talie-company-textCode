@@ -6,14 +6,27 @@ import User from "./User";
 import SearchInput from "./SearchInput";
 
 const items_size = 5;
+const storage_key = "user_search_query";
 
 const UserList: React.FC = () => {
-  const [input, setInput] = useState("");
+  // get before search query
+  const [input, setInput] = useState(() => {
+    return localStorage.getItem(storage_key) ?? "";
+  });
+
   const [users, setUsers] = useState<Userprops[]>([]);
   const [selectUser, setSelectUser] = useState<Userprops | null>(null);
 
   // items to show
   const [visibleCount, setVisibleCount] = useState(items_size);
+
+  // set input to localstorage
+  useEffect(() => {
+    const searchQuery = input.trim().toLowerCase();
+    if (searchQuery) {
+      localStorage.setItem(storage_key, searchQuery);
+    } else localStorage.removeItem(storage_key);
+  }, [input]);
 
   // api request for give users data
   useEffect(() => {
